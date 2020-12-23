@@ -1,0 +1,95 @@
+body {
+    background-color: #dbdbdb;
+    padding: 25px;
+}
+.hidden {
+    display: none !important;
+}
+/* @start equation */
+.equation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.equation__wrapper {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+}
+.equation__var {
+    padding: 0 7px;
+}
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 30px;
+    cursor: pointer;
+    background-color: #808080;
+}
+.start-learning {
+    width: 284px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    padding-top: 25px;
+}
+.start-learning__btn{
+    width: 150px;
+}
+.start-learning__eras-amount {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+#eras {
+    width: 60px;
+}
+/* @end equation */
+
+
+/* @start table */
+section.table {
+    width: auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 21px;
+    padding-top: 30px;
+}
+
+.table__wrapper {
+    display: table;
+    border-collapse: collapse;
+}
+
+.table__row {
+    display: table-row;
+    flex-direction: row;
+    height: 35px;
+}
+
+.table__column {
+    width: 70px;
+    border: 1px solid #333;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table__header,
+.table__column-answer {
+    font-weight: bold;
+}
+.table__column-answer:not(.table__header-answer) {
+    color: #038103;
+}
+/* @end table */

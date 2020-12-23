@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="classes/Neuron.js"></script>
+    <script src="classes/Variable.js"></script>
+    <script src="constants.js"></script>
+</head>
+<body>
+<main>
+    <div class="equation">
+        <div class="equation__wrapper">
+            <span class="equation__var">
+                X1
+            </span>
+            <select name="equation__var" id="equation__first-var">
+            </select>
+            <span class="equation__var">
+                X2
+            </span>
+            <select name="equation__var" id="equation__second-var">
+            </select>
+            <span class="equation__var">
+                X3
+            </span>
+        </div>
+        <div class="btn" id="count_btn">
+            Посчитать
+        </div>
+    </div>
+    <section class="table">
+        <div class="table__wrapper">
+            <div class="table__row table__header">
+                <div class="table__column">X1</div>
+                <div class="table__column">X2</div>
+                <div class="table__column">X3</div>
+                <div class="table__column table__column-answer table__header-answer">y</div>
+            </div>
+            <div class="table__row">
+                <div class="table__column">0</div>
+                <div class="table__column">0</div>
+                <div class="table__column">0</div>
+                <div class="table__column table__column-answer"></div>
+            </div>
+            <div class="table__row">
+                <div class="table__column">0</div>
+                <div class="table__column">0</div>
+                <div class="table__column">1</div>
+                <div class="table__column table__column-answer"></div>
+            </div>
+            <div class="table__row">
+                <div class="table__column">0</div>
+                <div class="table__column">1</div>
+                <div class="table__column">0</div>
+                <div class="table__column table__column-answer"></div>
+            </div>
+            <div class="table__row">
+                <div class="table__column">0</div>
+                <div class="table__column">1</div>
+                <div class="table__column">1</div>
+                <div class="table__column table__column-answer"></div>
+            </div>
+            <div class="table__row">
+                <div class="table__column">1</div>
+                <div class="table__column">0</div>
+                <div class="table__column">0</div>
+                <div class="table__column table__column-answer"></div>
+            </div>
+            <div class="table__row">
+                <div class="table__column">1</div>
+                <div class="table__column">0</div>
+                <div class="table__column">1</div>
+                <div class="table__column table__column-answer"></div>
+            </div>
+            <div class="table__row">
+                <div class="table__column">1</div>
+                <div class="table__column">1</div>
+                <div class="table__column">0</div>
+                <div class="table__column table__column-answer"></div>
+            </div>
+            <div class="table__row">
+                <div class="table__column">1</div>
+                <div class="table__column">1</div>
+                <div class="table__column">1</div>
+                <div class="table__column table__column-answer"></div>
+            </div>
+        </div>
+    </section>
+    <div class="start-learning hidden">
+        <div class="start-learning__eras-amount">
+            <label for="eras">Количество эпох:</label>
+            <input type="text" name="eras" id="eras" value="5000">
+        </div>
+        <div class="btn start-learning__btn" id="start-learning">Начать обучение</div>
+    </div>
+</main>
+<script src="eventListeners.js"></script>
+<script src="functions.js"></script>
+</body>
+</html>
