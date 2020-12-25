@@ -8,7 +8,6 @@
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
     <script src="classes/Neuron.js"></script>
-    <script src="classes/Variable.js"></script>
     <script src="constants.js"></script>
 </head>
 <body>
@@ -33,73 +32,112 @@
             Посчитать
         </div>
     </div>
-    <section class="table">
-        <div class="table__wrapper">
-            <div class="table__row table__header">
-                <div class="table__column">X1</div>
-                <div class="table__column">X2</div>
-                <div class="table__column">X3</div>
-                <div class="table__column table__column-answer table__header-answer">y</div>
+    <div class="main-content__wrapper">
+        <section class="left-content">
+            <div class="table__wrapper">
+                <div class="table__row table__header">
+                    <div class="table__column">X1</div>
+                    <div class="table__column">X2</div>
+                    <div class="table__column">X3</div>
+                    <div class="table__column table__column-answer table__header-answer">y</div>
+                </div>
+                <div class="table__row">
+                    <div class="table__column">0</div>
+                    <div class="table__column">0</div>
+                    <div class="table__column">0</div>
+                    <div class="table__column table__column-answer"></div>
+                </div>
+                <div class="table__row">
+                    <div class="table__column">0</div>
+                    <div class="table__column">0</div>
+                    <div class="table__column">1</div>
+                    <div class="table__column table__column-answer"></div>
+                </div>
+                <div class="table__row">
+                    <div class="table__column">0</div>
+                    <div class="table__column">1</div>
+                    <div class="table__column">0</div>
+                    <div class="table__column table__column-answer"></div>
+                </div>
+                <div class="table__row">
+                    <div class="table__column">0</div>
+                    <div class="table__column">1</div>
+                    <div class="table__column">1</div>
+                    <div class="table__column table__column-answer"></div>
+                </div>
+                <div class="table__row">
+                    <div class="table__column">1</div>
+                    <div class="table__column">0</div>
+                    <div class="table__column">0</div>
+                    <div class="table__column table__column-answer"></div>
+                </div>
+                <div class="table__row">
+                    <div class="table__column">1</div>
+                    <div class="table__column">0</div>
+                    <div class="table__column">1</div>
+                    <div class="table__column table__column-answer"></div>
+                </div>
+                <div class="table__row">
+                    <div class="table__column">1</div>
+                    <div class="table__column">1</div>
+                    <div class="table__column">0</div>
+                    <div class="table__column table__column-answer"></div>
+                </div>
+                <div class="table__row">
+                    <div class="table__column">1</div>
+                    <div class="table__column">1</div>
+                    <div class="table__column">1</div>
+                    <div class="table__column table__column-answer"></div>
+                </div>
             </div>
-            <div class="table__row">
-                <div class="table__column">0</div>
-                <div class="table__column">0</div>
-                <div class="table__column">0</div>
-                <div class="table__column table__column-answer"></div>
+            <div class="start-learning hidden">
+                <div class="start-learning__eras-amount">
+                    <label for="eras">Количество эпох:</label>
+                    <input type="text" name="eras" id="eras" value="5000">
+                </div>
+                <div class="btn start-learning__btn" id="start-learning">Начать обучение</div>
             </div>
-            <div class="table__row">
-                <div class="table__column">0</div>
-                <div class="table__column">0</div>
-                <div class="table__column">1</div>
-                <div class="table__column table__column-answer"></div>
+
+            <div class="neuron-count__wrapper hidden" id="neuron-count">
+                <div class="neuron-count__header">
+                    Нейрон обучен.<br>
+                    Введите значения для X
+                </div>
+
+                <div class="neuron-count__inputs">
+                    <div class="neuron-count__input-wrapper">
+                        <label for="neuron-count__x1">X1:</label>
+                        <input type="text" id="neuron-count__x1" class="neuron-count__input" value="1">
+                    </div>
+                    <div class="neuron-count__input-wrapper">
+                        <label for="neuron-count__x2">X2:</label>
+                        <input type="text" id="neuron-count__x2" class="neuron-count__input" value="1">
+                    </div>
+                    <div class="neuron-count__input-wrapper">
+                        <label for="neuron-count__x3">X3:</label>
+                        <input type="text" id="neuron-count__x3" class="neuron-count__input" value="0">
+                    </div>
+                </div>
+
+                <div class="neuron-count__result-wrapper">
+                    <div class="neron-count__result-text">Ответ нейрона:</div>
+                    <div class="neuron-count__result-answer"></div>
+                </div>
+
+                <div class="neuron-count__btn-wrapper btn" id="neuron-count__btn">
+                    Вычислить
+                </div>
             </div>
-            <div class="table__row">
-                <div class="table__column">0</div>
-                <div class="table__column">1</div>
-                <div class="table__column">0</div>
-                <div class="table__column table__column-answer"></div>
-            </div>
-            <div class="table__row">
-                <div class="table__column">0</div>
-                <div class="table__column">1</div>
-                <div class="table__column">1</div>
-                <div class="table__column table__column-answer"></div>
-            </div>
-            <div class="table__row">
-                <div class="table__column">1</div>
-                <div class="table__column">0</div>
-                <div class="table__column">0</div>
-                <div class="table__column table__column-answer"></div>
-            </div>
-            <div class="table__row">
-                <div class="table__column">1</div>
-                <div class="table__column">0</div>
-                <div class="table__column">1</div>
-                <div class="table__column table__column-answer"></div>
-            </div>
-            <div class="table__row">
-                <div class="table__column">1</div>
-                <div class="table__column">1</div>
-                <div class="table__column">0</div>
-                <div class="table__column table__column-answer"></div>
-            </div>
-            <div class="table__row">
-                <div class="table__column">1</div>
-                <div class="table__column">1</div>
-                <div class="table__column">1</div>
-                <div class="table__column table__column-answer"></div>
-            </div>
+        </section>
+
+        <div class="canvas__wrapper">
+            <canvas id="graph"></canvas>
         </div>
-    </section>
-    <div class="start-learning hidden">
-        <div class="start-learning__eras-amount">
-            <label for="eras">Количество эпох:</label>
-            <input type="text" name="eras" id="eras" value="5000">
-        </div>
-        <div class="btn start-learning__btn" id="start-learning">Начать обучение</div>
     </div>
+
 </main>
 <script src="eventListeners.js"></script>
 <script src="functions.js"></script>
+<script src="canvasDrawer.js"></script>
 </body>
 </html>

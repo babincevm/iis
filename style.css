@@ -5,6 +5,14 @@ body {
 .hidden {
     display: none !important;
 }
+
+.main-content__wrapper {
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
 /* @start equation */
 .equation {
     display: flex;
@@ -39,6 +47,7 @@ body {
     justify-content: center;
     align-items: center;
     padding-top: 25px;
+    font-size: 16px;
 }
 .start-learning__btn{
     width: 150px;
@@ -57,13 +66,15 @@ body {
 
 
 /* @start table */
-section.table {
-    width: auto;
+section.left-content {
+    width: max-content;
     display: flex;
+    flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     font-size: 21px;
     padding-top: 30px;
+    min-width: 290px;
 }
 
 .table__wrapper {
@@ -93,3 +104,52 @@ section.table {
     color: #038103;
 }
 /* @end table */
+
+/* @start neuron count */
+.neuron-count__wrapper {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    padding-top: 20px;
+    font-size: 16px;
+}
+.neuron-count__header {
+    display: flex;
+    width: 100%;
+    font-size: 18px;
+
+}
+.neuron-count__inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 10px 0;
+}
+.neuron-count__input-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+.neuron-count__input {
+    width: 45px;
+    height: 20px;
+}
+.neuron-count__btn-wrapper {
+
+}
+/* @end neuron count */
+
+/* @start canvas */
+.canvas__wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    max-height: 935px;
+}
+#graph {
+    width: 100%;
+    height: 100%;
+    border: 1px solid black;
+}
+/* @end canvas */
