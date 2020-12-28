@@ -21,26 +21,59 @@ function createParams() {
     }
 }
 
+function runBackPropagation(hidden_neurons, opened_neuron) {
+    let output_sigma = opened_neuron.getOutputSigma(); // вычисляем сигму от выходного сигнала
+
+    // берем значение омеги из открытого нейрона
+    let open_neuron_omegas = opened_neuron.omegas;
+
+    // сигма для открытого нейрона
+    opened_neuron.setSelfSigma(output_sigma, 1);
+
+    // вычисляем сигму для каждого скрытого нейрона и обновляем значение омега
+    hidden_neurons.forEach((neuron, iterator) => {
+        neuron.setSelfSigma(output_sigma, open_neuron_omegas[iterator]);
+        neuron.updateOmegas();
+    });
+
+    // обновляем значения омега для открытого нейрона
+    opened_neuron.updateOmegas();
+}
+
+async function afterEra(hidden_neurons, opened_neuron, benchmarks, step_number) {
+    let E = vars_list.reduce((accumulator, vars, iterator) => {
+        opened_neuron.current_vars = hidden_neurons.map(neuron => {
+            neuron.current_vars = vars;
+            return neuron.calculateY();
+        });
+        opened_neuron.current_benchmark = benchmarks[iterator];
+        return accumulator + opened_neuron.getSquaredError();
+    }, 0);
+
+    try {
+        await addGraphPoint(step_number, E * 100);
+    } catch (e) {
+        console.log(e);
+        throw new Error('This is not an error. This is just to abort javascript');
+    }
+}
+
+async function addGraphPoint(x, y) {
+    await Plotly.extendTraces(window.plot, {
+        x: [x],
+        y: [y]
+    }, [0]);
+}
+
+
+
 if (!window.learn) {
-    window.learn = (eras_amount, benchmarks) => {
-        function runBackPropagation(hidden_neurons, opened_neuron) {
-            let output_sigma = opened_neuron.getOutputSigma(); // вычисляем сигму от выходного сигнала
-
-            // берем значение омеги из открытого нейрона
-            let open_neuron_omegas = opened_neuron.omegas;
-
-            // сигма для открытого нейрона
-            opened_neuron.setSelfSigma(output_sigma, 1);
-
-            // вычисляем сигму для каждого скрытого нейрона и обновляем значение омега
-            hidden_neurons.forEach((neuron, iterator) => {
-                neuron.setSelfSigma(output_sigma, open_neuron_omegas[iterator]);
-                neuron.updateOmegas();
-            });
-
-            // обновляем значения омега для открытого нейрона
-            opened_neuron.updateOmegas();
-        }
+    /**
+     *
+     * @param eras_amount
+     * @param benchmarks
+     */
+    window.learn = async (eras_amount, benchmarks) => {
 
         // массив с 3 скрытыми нейронами
         let hidden_neurons = Array.from(
@@ -68,6 +101,7 @@ if (!window.learn) {
                 opened_neuron_output = opened_neuron.calculateY();
                 runBackPropagation(hidden_neurons, opened_neuron);
             });
+            await afterEra(hidden_neurons, opened_neuron, benchmarks, i);
         }
 
         // для вычисления ответа обученным нейроном

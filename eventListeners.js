@@ -16,7 +16,7 @@ let operators = {
 let is_listener_added = false;
 let $count_btn = document.querySelector('#count_btn');
 $count_btn.addEventListener('click', () => {
-    window.benchmarks = []; // эталонные ответы
+    let benchmarks = []; // эталонные ответы
 
     let $first_operator = document.querySelector('#equation__first-var');
     let $second_operator = document.querySelector('#equation__second-var');
@@ -43,7 +43,7 @@ $count_btn.addEventListener('click', () => {
         let $answer_cell = $row.querySelector('.table__column-answer');
         let tmp_answer = operators[first_operator].func(values[first_var], values[first_var + 1]);
         let answer = operators[second_operator].func(values[second_var], tmp_answer);
-        window.benchmarks.push(answer);
+        benchmarks.push(answer);
         $answer_cell.innerHTML = answer;
     });
 
@@ -58,7 +58,7 @@ $count_btn.addEventListener('click', () => {
         let $neuron_count_container = document.querySelector('#neuron-count');
         let is_neuron_count_listener_added = false;
         $start_learning_btn.addEventListener('click', () => {
-            window.learn(parseInt(document.querySelector('#eras').value), window.benchmarks);
+            window.learn(parseInt(document.querySelector('#eras').value), benchmarks);
 
             $neuron_count_container.classList.remove('hidden');
             let $neuron_count_btn = $neuron_count_container.querySelector('#neuron-count__btn');
@@ -84,8 +84,16 @@ window.addEventListener('DOMContentLoaded', () => {
     $selects.forEach($select => {
         $select.innerHTML = $options
     });
-})
+    window.plot = initiatePlotly();
+});
 
-
+async function initiatePlotly() {
+    let trace = {
+        x: [],
+        y: [],
+        type: 'scatter'
+    };
+    return await Plotly.newPlot('graph', [trace]);
+}
 
 

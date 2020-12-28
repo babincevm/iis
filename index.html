@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="classes/Neuron.js"></script>
     <script src="constants.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js" charset="utf-8"></script>
 </head>
 <body>
 <main>
@@ -93,7 +94,7 @@
             <div class="start-learning hidden">
                 <div class="start-learning__eras-amount">
                     <label for="eras">Количество эпох:</label>
-                    <input type="text" name="eras" id="eras" value="5000">
+                    <input type="text" name="eras" id="eras" value="10">
                 </div>
                 <div class="btn start-learning__btn" id="start-learning">Начать обучение</div>
             </div>
@@ -130,14 +131,12 @@
             </div>
         </section>
 
-        <div class="canvas__wrapper">
-            <canvas id="graph"></canvas>
+        <div class="canvas__wrapper" id="graph">
         </div>
     </div>
 
 </main>
 <script src="eventListeners.js"></script>
 <script src="functions.js"></script>
-<script src="canvasDrawer.js"></script>
 </body>
 </html>

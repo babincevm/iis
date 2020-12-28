@@ -85,4 +85,9 @@ class Neuron {
             (omega, iterator) => omega + (this._eta_value * this._self_sigma * this._current_vars[iterator])
         );
     }
+
+    getSquaredError() {
+        this.calculateY();
+        return (this._Y_calculated - this._current_benchmark) * (this._Y_calculated - this._current_benchmark)
+    }
 }
