@@ -65,6 +65,7 @@ $count_btn.addEventListener('click', () => {
 
         let is_neuron_count_listener_added = false;
         $start_learning_btn.addEventListener('click', () => {
+            window.is_stop_loop = false;
             let $neuron_count_container = document.querySelector('#neuron-count');
             window.learn(parseInt(document.querySelector('#eras').value), benchmarks, parseFloat(document.querySelector('#eps').value),is_neuron_count_listener_added);
             is_neuron_count_listener_added = true;

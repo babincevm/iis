@@ -9,6 +9,10 @@ let vars_list = [
     [1, 1, 1],
 ];
 
+/**
+ * Очистка графика
+ * @returns {Promise<void>}
+ */
 async function reloadPlotty() {
     Plotly.deleteTraces('graph', 0);
     let trace = {
@@ -19,10 +23,19 @@ async function reloadPlotty() {
     await Plotly.addTraces('graph', [trace]);
 }
 
+/**
+ * Промис для втсавки отрисовки графика в стек вызовов
+ * @param ms
+ * @returns {Promise<unknown>}
+ */
 const sleep = ms => {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+/**
+ * Начальные параметры для инициализации нейронов
+ * @returns {{trigger_function: (function(*): *), eta_value: number, derivative_of_trigger_func: (function(*=): *), omegas: unknown[]}}
+ */
 function createParams() {
     return {
         omegas: Array.from(
@@ -35,6 +48,11 @@ function createParams() {
     }
 }
 
+/**
+ * Функция обратного хода нейронов
+ * @param hidden_neurons
+ * @param opened_neuron
+ */
 function runBackPropagation(hidden_neurons, opened_neuron) {
     let output_sigma = opened_neuron.getOutputSigma(); // вычисляем сигму от выходного сигнала
 
@@ -54,8 +72,15 @@ function runBackPropagation(hidden_neurons, opened_neuron) {
     opened_neuron.updateOmegas();
 }
 
+/**
+ * Отрисовка графика +
+ * @param hidden_neurons
+ * @param opened_neuron
+ * @param benchmarks
+ * @param step_number
+ */
 function afterEra(hidden_neurons, opened_neuron, benchmarks, step_number) {
-    let E = vars_list.reduce((accumulator, vars, iterator) => {
+    E = vars_list.reduce((accumulator, vars, iterator) => {
         opened_neuron.current_vars = hidden_neurons.map(neuron => {
             neuron.current_vars = vars;
             return neuron.calculateY();
@@ -65,22 +90,32 @@ function afterEra(hidden_neurons, opened_neuron, benchmarks, step_number) {
     }, 0);
 
     addGraphPoint(step_number, E * 100);
+    return E;
+
 }
 
+/**
+ * Прорисовка графика. Вставляется в стек вызовов для плавного отрисовывания
+ * @param x
+ * @param y
+ */
 function addGraphPoint(x, y) {
-    Plotly.extendTraces('graph', {
-        x: [[x]],
-        y: [[y]]
-    }, [0]);
+    sleep(0).then(() => {
+        Plotly.extendTraces('graph', {
+            x: [[x]],
+            y: [[y]]
+        }, [0]);
+    });
 }
 
 
 if (!window.learn) {
     /**
-     * @param eras_amount
-     * @param benchmarks
-     * @param eps
-     * @param is_repeat
+     * Обучение нейросети
+     * @param eras_amount Количество эпох
+     * @param benchmarks Эталонные значения
+     * @param eps Значение EPS для ошибок
+     * @param is_repeat при повторном нажатии очистить график
      */
     window.learn = (eras_amount, benchmarks, eps, is_repeat) => {
         // при повторном нажатии на кнопку начать обучение зануляем нейроны
@@ -98,28 +133,24 @@ if (!window.learn) {
         let opened_neuron = new Neuron(createParams());
 
         let hidden_neuron_results, opened_neuron_output;
-        for (let i = 0; i < eras_amount; i++) {
-            sleep(0).then(() => {
-                vars_list.forEach((vars, iterator) => {
-                    // массив с результатами скрытых нейронов
-                    hidden_neuron_results = hidden_neurons.map(neuron => {
-                        neuron.current_vars = vars;
-                        neuron.current_benchmark = benchmarks[iterator];
-                        return neuron.calculateY();
-                    });
-
-                    // значения открытого нейрона из ответов скрытых нейронов
-                    opened_neuron.current_vars = hidden_neuron_results;
-                    opened_neuron.current_benchmark = benchmarks[iterator];
-                    opened_neuron_output = opened_neuron.calculateY();
-                    runBackPropagation(hidden_neurons, opened_neuron);
+        let E = Number.MAX_VALUE;
+        for (let i = 0; i < eras_amount && E > eps; i++) {
+            vars_list.forEach((vars, iterator) => {
+                // массив с результатами скрытых нейронов
+                hidden_neuron_results = hidden_neurons.map(neuron => {
+                    neuron.current_vars = vars;
+                    neuron.current_benchmark = benchmarks[iterator];
+                    return neuron.calculateY();
                 });
-                afterEra(hidden_neurons, opened_neuron, benchmarks, i);
 
-            })
+                // значения открытого нейрона из ответов скрытых нейронов
+                opened_neuron.current_vars = hidden_neuron_results;
+                opened_neuron.current_benchmark = benchmarks[iterator];
+                opened_neuron_output = opened_neuron.calculateY();
+                runBackPropagation(hidden_neurons, opened_neuron);
+            });
+            E = afterEra(hidden_neurons, opened_neuron, benchmarks, i);
         }
-
-        // для вычисления ответа обученным нейроном
 
         /**
          * Вычисляет значение уравнения для переданных параметров
