@@ -88,7 +88,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let $options = Object.keys(operators).reduce(
         (accumulator, currentVal) =>
             accumulator + `<option value="${currentVal}">${currentVal.toUpperCase()}</option>`
-    );
+    , 0);
     $selects.forEach($select => {
         $select.innerHTML = $options
     });
