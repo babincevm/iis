@@ -99,65 +99,63 @@ function addGraphPoint(x, y) {
     }, 0);
 }
 
+/**
+ * Обучение нейросети
+ * @param eras_amount Количество эпох
+ * @param benchmarks Эталонные значения
+ * @param eps Значение EPS для ошибок
+ * @param is_repeat при повторном нажатии очистить график
+ */
+window.learn = (eras_amount, benchmarks, eps, is_repeat) => {
+    // при повторном нажатии на кнопку начать обучение зануляем нейроны
+    if (is_repeat) {
+        reloadPlotly();
+    }
 
-if (!window.learn) {
-    /**
-     * Обучение нейросети
-     * @param eras_amount Количество эпох
-     * @param benchmarks Эталонные значения
-     * @param eps Значение EPS для ошибок
-     * @param is_repeat при повторном нажатии очистить график
-     */
-    window.learn = (eras_amount, benchmarks, eps, is_repeat) => {
-        // при повторном нажатии на кнопку начать обучение зануляем нейроны
-        if (is_repeat) {
-            reloadPlotly()
-        }
+    // массив с 3 скрытыми нейронами
+    let hidden_neurons = Array.from(
+        {length: 3},
+        () => new Neuron(createParams()) // classes/Neuron.js
+    );
+    // открытый нейрон
+    let opened_neuron = new Neuron(createParams());
 
-        // массив с 3 скрытыми нейронами
-        let hidden_neurons = Array.from(
-            {length: 3},
-            () => new Neuron(createParams()) // classes/Neuron.js
-        );
-
-        // открытый нейрон
-        let opened_neuron = new Neuron(createParams());
-
-        let hidden_neuron_results, opened_neuron_output;
-        let E = Number.MAX_VALUE;
-        for (let i = 0; i < eras_amount && E > eps; i++) {
-            vars_list.forEach((vars, iterator) => {
-                // массив с результатами скрытых нейронов
-                hidden_neuron_results = hidden_neurons.map(neuron => {
-                    neuron.current_vars = vars;
-                    neuron.current_benchmark = benchmarks[iterator];
-                    return neuron.calculateY();
-                });
-
-                // значения открытого нейрона из ответов скрытых нейронов
-                opened_neuron.current_vars = hidden_neuron_results;
-                opened_neuron.current_benchmark = benchmarks[iterator];
-                opened_neuron_output = opened_neuron.calculateY();
-                runBackPropagation(hidden_neurons, opened_neuron);
-            });
-            E = afterEra(hidden_neurons, opened_neuron, benchmarks, i);
-        }
-
-        /**
-         * Вычисляет значение уравнения для переданных параметров
-         * @param vars {Array.<number>} значения X для уравнения
-         * @return {number} ответ нейросети для переданных параметров
-         */
-        window.neuron_count = (vars) => {
-            opened_neuron.current_vars = hidden_neurons.map(neuron => {
+    let hidden_neuron_results, opened_neuron_output;
+    let E = Number.MAX_VALUE;
+    for (let i = 0; i < eras_amount && E > eps; i++) {
+        vars_list.forEach((vars, iterator) => {
+            // массив с результатами скрытых нейронов
+            hidden_neuron_results = hidden_neurons.map(neuron => {
                 neuron.current_vars = vars;
+                neuron.current_benchmark = benchmarks[iterator];
                 return neuron.calculateY();
             });
 
-            return opened_neuron.calculateY();
-        }
-
+            // значения открытого нейрона из ответов скрытых нейронов
+            opened_neuron.current_vars = hidden_neuron_results;
+            opened_neuron.current_benchmark = benchmarks[iterator];
+            opened_neuron_output = opened_neuron.calculateY();
+            runBackPropagation(hidden_neurons, opened_neuron);
+        });
+        E = afterEra(hidden_neurons, opened_neuron, benchmarks, i);
     }
+
+    /**
+     * Вычисляет значение уравнения для переданных параметров
+     * @param vars {Array.<number>} значения X для уравнения
+     * @return {number} ответ нейросети для переданных параметров
+     */
+    window.neuron_count = null;
+    window.neuron_count = vars => {
+        opened_neuron.current_vars = hidden_neurons.map(neuron => {
+            neuron.current_vars = vars;
+            return neuron.calculateY();
+        });
+
+        return opened_neuron.calculateY();
+    }
+
 }
+
 
 

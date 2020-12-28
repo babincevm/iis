@@ -22,10 +22,34 @@ let operators = {
     }
 }
 
+function startLearning(benchmarks, is_neuron_count_listener_added) {
+    let $neuron_count_container = document.querySelector('#neuron-count');
+    window.learn(
+        parseInt(document.querySelector('#eras').value),
+        benchmarks,
+        parseFloat(document.querySelector('#eps').value),
+        is_neuron_count_listener_added
+    );
+    $neuron_count_container.classList.remove('hidden');
+    let $neuron_count_btn = $neuron_count_container.querySelector('#neuron-count__btn');
+
+    if (!is_neuron_count_listener_added) {
+        $neuron_count_btn.addEventListener('click', () => {
+            neuronCount($neuron_count_container);
+        });
+    }
+}
+
+function neuronCount($neuron_count_container) {
+    let vars = [...$neuron_count_container.querySelectorAll('.neuron-count__inputs input')]
+        .map($input => parseInt($input.value));
+    $neuron_count_container.querySelector('.neuron-count__result-answer').innerHTML = window.neuron_count(vars);
+}
+
 let is_listener_added = false;
 let $count_btn = document.querySelector('#count_btn');
 $count_btn.addEventListener('click', () => {
-    let benchmarks = []; // эталонные ответы
+    window.benchmarks = []; // эталонные ответы
 
     let $first_operator = document.querySelector('#equation__first-var');
     let $second_operator = document.querySelector('#equation__second-var');
@@ -64,20 +88,9 @@ $count_btn.addEventListener('click', () => {
         $start_learning_btn.parentNode.classList.remove('hidden');
 
         let is_neuron_count_listener_added = false;
-        $start_learning_btn.addEventListener('click', () => {
-            window.is_stop_loop = false;
-            let $neuron_count_container = document.querySelector('#neuron-count');
-            window.learn(parseInt(document.querySelector('#eras').value), benchmarks, parseFloat(document.querySelector('#eps').value), is_neuron_count_listener_added);
+        $start_learning_btn.addEventListener('click', function listener() {
+            startLearning(window.benchmarks, is_neuron_count_listener_added);
             is_neuron_count_listener_added = true;
-            $neuron_count_container.classList.remove('hidden');
-            let $neuron_count_btn = $neuron_count_container.querySelector('#neuron-count__btn');
-
-            $neuron_count_btn.addEventListener('click', () => {
-                let vars = [...$neuron_count_container.querySelectorAll('.neuron-count__inputs input')]
-                    .map($input => parseInt($input.value));
-                $neuron_count_container.querySelector('.neuron-count__result-answer').innerHTML = window.neuron_count(vars);
-            });
-
         }); // functions.js
     }
 });
@@ -88,7 +101,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let $options = Object.keys(operators).reduce(
         (accumulator, currentVal) =>
             accumulator + `<option value="${currentVal}">${currentVal.toUpperCase()}</option>`
-    , 0);
+        , "");
     $selects.forEach($select => {
         $select.innerHTML = $options
     });
