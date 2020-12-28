@@ -13,7 +13,7 @@ let vars_list = [
  * Очистка графика
  * @returns {Promise<void>}
  */
-async function reloadPlotty() {
+async function reloadPlotly() {
     Plotly.deleteTraces('graph', 0);
     let trace = {
         x: [],
@@ -111,7 +111,7 @@ if (!window.learn) {
     window.learn = (eras_amount, benchmarks, eps, is_repeat) => {
         // при повторном нажатии на кнопку начать обучение зануляем нейроны
         if (is_repeat) {
-            reloadPlotty()
+            reloadPlotly()
         }
 
         // массив с 3 скрытыми нейронами

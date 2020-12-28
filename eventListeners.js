@@ -86,7 +86,8 @@ window.addEventListener('DOMContentLoaded', () => {
     // заполняем селекты доступными операторами
     let $selects = document.querySelectorAll('select[name="equation__var"]');
     let $options = Object.keys(operators).reduce(
-        (accumulator, currentVal) => accumulator + `<option value="${currentVal}">${currentVal.toUpperCase()}</option>`
+        (accumulator, currentVal) =>
+            accumulator + `<option value="${currentVal}">${currentVal.toUpperCase()}</option>`
     );
     $selects.forEach($select => {
         $select.innerHTML = $options
