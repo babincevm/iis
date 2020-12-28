@@ -16,7 +16,7 @@ if (!window.trigger_function) {
 
 // значение эта
 if (!window.eta_value) {
-    window.eta_value = 0.75;
+    window.eta_value = 0.55;
 }
 
 

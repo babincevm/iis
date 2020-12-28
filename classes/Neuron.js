@@ -36,10 +36,6 @@ class Neuron {
         return this._current_vars;
     }
 
-    get Y_calculated() {
-        return this._Y_calculated;
-    }
-
     get omegas() {
         return this._omegas;
     }
@@ -84,5 +80,14 @@ class Neuron {
         this._omegas = this._omegas.map(
             (omega, iterator) => omega + (this._eta_value * this._self_sigma * this._current_vars[iterator])
         );
+    }
+
+    /**
+     * Вычисляет квадрат ошибки для выхода открытого нейрона
+     * @returns {number} квадрат ошибки результата
+     */
+    getSquaredError() {
+        this.calculateY();
+        return (this._Y_calculated - this._current_benchmark) * (this._Y_calculated - this._current_benchmark)
     }
 }
