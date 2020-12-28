@@ -9,6 +9,20 @@ let vars_list = [
     [1, 1, 1],
 ];
 
+async function reloadPlotty() {
+    Plotly.deleteTraces('graph', 0);
+    let trace = {
+        x: [],
+        y: [],
+        type: 'scatter'
+    };
+    await Plotly.addTraces('graph', [trace]);
+}
+
+const sleep = ms => {
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 function createParams() {
     return {
         omegas: Array.from(
@@ -40,7 +54,7 @@ function runBackPropagation(hidden_neurons, opened_neuron) {
     opened_neuron.updateOmegas();
 }
 
-async function afterEra(hidden_neurons, opened_neuron, benchmarks, step_number) {
+function afterEra(hidden_neurons, opened_neuron, benchmarks, step_number) {
     let E = vars_list.reduce((accumulator, vars, iterator) => {
         opened_neuron.current_vars = hidden_neurons.map(neuron => {
             neuron.current_vars = vars;
@@ -50,30 +64,29 @@ async function afterEra(hidden_neurons, opened_neuron, benchmarks, step_number) 
         return accumulator + opened_neuron.getSquaredError();
     }, 0);
 
-    try {
-        await addGraphPoint(step_number, E * 100);
-    } catch (e) {
-        console.log(e);
-        throw new Error('This is not an error. This is just to abort javascript');
-    }
+    addGraphPoint(step_number, E * 100);
 }
 
-async function addGraphPoint(x, y) {
-    await Plotly.extendTraces(window.plot, {
-        x: [x],
-        y: [y]
+function addGraphPoint(x, y) {
+    Plotly.extendTraces('graph', {
+        x: [[x]],
+        y: [[y]]
     }, [0]);
 }
 
 
-
 if (!window.learn) {
     /**
-     *
      * @param eras_amount
      * @param benchmarks
+     * @param eps
+     * @param is_repeat
      */
-    window.learn = async (eras_amount, benchmarks) => {
+    window.learn = (eras_amount, benchmarks, eps, is_repeat) => {
+        // при повторном нажатии на кнопку начать обучение зануляем нейроны
+        if (is_repeat) {
+            reloadPlotty()
+        }
 
         // массив с 3 скрытыми нейронами
         let hidden_neurons = Array.from(
@@ -85,41 +98,43 @@ if (!window.learn) {
         let opened_neuron = new Neuron(createParams());
 
         let hidden_neuron_results, opened_neuron_output;
-
         for (let i = 0; i < eras_amount; i++) {
-            vars_list.forEach((vars, iterator) => {
-                // массив с результатами скрытых нейронов
-                hidden_neuron_results = hidden_neurons.map((neuron) => {
-                    neuron.current_vars = vars;
-                    neuron.current_benchmark = benchmarks[iterator];
-                    return neuron.calculateY();
-                });
+            sleep(0).then(() => {
+                vars_list.forEach((vars, iterator) => {
+                    // массив с результатами скрытых нейронов
+                    hidden_neuron_results = hidden_neurons.map(neuron => {
+                        neuron.current_vars = vars;
+                        neuron.current_benchmark = benchmarks[iterator];
+                        return neuron.calculateY();
+                    });
 
-                // значения открытого нейрона из ответов скрытых нейронов
-                opened_neuron.current_vars = hidden_neuron_results;
-                opened_neuron.current_benchmark = benchmarks[iterator];
-                opened_neuron_output = opened_neuron.calculateY();
-                runBackPropagation(hidden_neurons, opened_neuron);
-            });
-            await afterEra(hidden_neurons, opened_neuron, benchmarks, i);
+                    // значения открытого нейрона из ответов скрытых нейронов
+                    opened_neuron.current_vars = hidden_neuron_results;
+                    opened_neuron.current_benchmark = benchmarks[iterator];
+                    opened_neuron_output = opened_neuron.calculateY();
+                    runBackPropagation(hidden_neurons, opened_neuron);
+                });
+                afterEra(hidden_neurons, opened_neuron, benchmarks, i);
+
+            })
         }
 
         // для вычисления ответа обученным нейроном
-        if (!window.neuron_count) {
-            /**
-             * Вычисляет значение уравнения для переданных параметров
-             * @param vars {Array.<number>} значения X для уравнения
-             * @return {number} ответ нейросети для переданных параметров
-             */
-            window.neuron_count = (vars) => {
-                opened_neuron.current_vars = hidden_neurons.map(neuron => {
-                    neuron.current_vars = vars;
-                    return  neuron.calculateY();
-                });
 
-                return opened_neuron.calculateY();
-            }
+        /**
+         * Вычисляет значение уравнения для переданных параметров
+         * @param vars {Array.<number>} значения X для уравнения
+         * @return {number} ответ нейросети для переданных параметров
+         */
+        window.neuron_count = (vars) => {
+            opened_neuron.current_vars = hidden_neurons.map(neuron => {
+                neuron.current_vars = vars;
+                return neuron.calculateY();
+            });
+
+            return opened_neuron.calculateY();
         }
+
     }
 }
 

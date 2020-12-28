@@ -2,17 +2,26 @@
 let operators = {
     'and': {
         priority: 2,
-        func: (x, y) => x && y,
+        func: (x, y) => !!(x && y),
     },
     'or': {
         priority: 3,
-        func: (x, y) => x || y,
+        func: (x, y) => !!(x || y),
     },
     'xor': {
         priority: 3,
-        func: (x, y) => x ^ y,
+        func: (x, y) => !!(x ^ y),
     },
+    'sheffer': {
+        priority: 2,
+        func: (x, y) => !(x && y),
+    },
+    'nor': {
+        priority: 3,
+        func: (x, y) => !(x || y),
+    }
 }
+
 let is_listener_added = false;
 let $count_btn = document.querySelector('#count_btn');
 $count_btn.addEventListener('click', () => {
@@ -50,26 +59,24 @@ $count_btn.addEventListener('click', () => {
 
     let $start_learning_btn = document.querySelector('#start-learning');
 
-
     if (!is_listener_added) {
         is_listener_added = true;
         $start_learning_btn.parentNode.classList.remove('hidden');
 
-        let $neuron_count_container = document.querySelector('#neuron-count');
         let is_neuron_count_listener_added = false;
         $start_learning_btn.addEventListener('click', () => {
-            window.learn(parseInt(document.querySelector('#eras').value), benchmarks);
-
+            let $neuron_count_container = document.querySelector('#neuron-count');
+            window.learn(parseInt(document.querySelector('#eras').value), benchmarks, parseFloat(document.querySelector('#eps').value),is_neuron_count_listener_added);
+            is_neuron_count_listener_added = true;
             $neuron_count_container.classList.remove('hidden');
             let $neuron_count_btn = $neuron_count_container.querySelector('#neuron-count__btn');
-            if (!is_neuron_count_listener_added) {
-                $neuron_count_btn.addEventListener('click', () => {
-                    let vars =
-                        [...$neuron_count_container.querySelectorAll('.neuron-count__inputs input')]
-                            .map($input => parseInt($input.value));
-                    $neuron_count_container.querySelector('.neuron-count__result-answer').innerHTML = window.neuron_count(vars);
-                });
-            }
+
+            $neuron_count_btn.addEventListener('click', () => {
+                let vars = [...$neuron_count_container.querySelectorAll('.neuron-count__inputs input')]
+                    .map($input => parseInt($input.value));
+                $neuron_count_container.querySelector('.neuron-count__result-answer').innerHTML = window.neuron_count(vars);
+            });
+
         }); // functions.js
     }
 });
@@ -84,16 +91,16 @@ window.addEventListener('DOMContentLoaded', () => {
     $selects.forEach($select => {
         $select.innerHTML = $options
     });
-    window.plot = initiatePlotly();
+    initPlotly();
 });
 
-async function initiatePlotly() {
+async function initPlotly() {
     let trace = {
         x: [],
         y: [],
         type: 'scatter'
     };
-    return await Plotly.newPlot('graph', [trace]);
+    await Plotly.newPlot('graph', [trace]);
 }
 
 
